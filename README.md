@@ -1,1 +1,1 @@
-# rsoi
+# RSOI labs

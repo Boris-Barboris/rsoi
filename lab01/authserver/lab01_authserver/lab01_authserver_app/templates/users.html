@@ -1,0 +1,9 @@
+<h2>User list</h2>
+
+<form method="post" action="/users/">
+{% csrf_token %}
+{% for user in users %}
+    <label> {{ user.uname }} </label>
+    <button type="submit" name="delete" id="delete_{{ user.uname }}" value="{{ user.uname }}">Delete</button><br>
+{% endfor %}
+</form>

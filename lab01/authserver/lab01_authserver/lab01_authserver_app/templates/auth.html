@@ -1,0 +1,14 @@
+<h2>Login screen (Auth endpoint)</h2>
+
+<form method="post" action="/login/">
+{% csrf_token %}
+Username: <input type="text" name="uname"><br>
+Password: <input type="password" name="password"><br>
+<input type="submit" name='login' value="Login"/>
+<input type="submit" name='register' value="Create User"/>
+{% if oauth %}
+    <input type="hidden" name='response_type' value="{{ oauth.response_type }}"/>
+    <input type="hidden" name='client_id' value="{{ oauth.client_id }}"/>
+    <input type="hidden" name='redirect_uri' value="{{ oauth.redirect_uri }}"/>
+{% endif %}
+</form>
