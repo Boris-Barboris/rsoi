@@ -9,7 +9,7 @@ log = logging.getLogger('client_app')
 
 from .oauthclient import *
 
-OAUTH_URL = 'http://192.168.243.5:39000'
+OAUTH_URL = 'http://192.168.243.5:39000'  # ой всё, ни слова про DNS
 CLIENT_ID = 'test_client_lab01'
 CLIENT_URL = 'http://192.168.243.5:39001'
 
