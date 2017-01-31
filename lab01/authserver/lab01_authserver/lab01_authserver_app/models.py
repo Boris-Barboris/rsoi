@@ -6,9 +6,9 @@ from django.utils import timezone
 
 salt = 'authsecretkey'
 
-atoken_lifetime = 4
-rtoken_lifetime = 3600
-agcode_lifetime = 4
+atoken_lifetime = 300
+rtoken_lifetime = 36000
+agcode_lifetime = 15
 
 # Create your models here.
 
