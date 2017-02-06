@@ -1,6 +1,7 @@
 from django.http import HttpResponse, HttpResponseForbidden, HttpResponseRedirect
 from django.http import HttpResponseBadRequest
 from django.urls import reverse
+from django.views.decorators.csrf import ensure_csrf_cookie
 from django.shortcuts import render
 from lab01_authserver_app.models import *
 import json
@@ -19,7 +20,7 @@ def auth_controller(request):
     else:
         return HttpResponseBadRequest('400 Malformed request.')
 
-        
+
 def login_controller(request):
     log_request(request)
     if request.method == 'POST':
@@ -50,6 +51,8 @@ def login_controller(request):
                 response = HttpResponseRedirect(reverse('users'))
                 response.set_cookie('uname', uname)
                 response.set_cookie('password', password)
+                if operation == 'register':
+                    response.status = 201
             log.debug('response:\n' + str(response.serialize()))
             return response
         else:
@@ -72,7 +75,7 @@ def users_controller(request):
     users = list_users()
     return render(request, 'users.html', {'users': users})
     
-    
+
 def users_controller_me(request):
     log_request(request)
     try:
@@ -167,7 +170,7 @@ def token_controller_refresh(request):
         return HttpResponse('401 Unauthorized', status=401)
     return HttpResponseBadRequest('400 Malformed request.')
     
-    
+
 def token_controller_grant(request):
     # this is debug endpoint to issue grant codes without redirect stuff
     log_request(request)
@@ -197,7 +200,7 @@ def log_request(request):
     log.debug('GET: ' + str(request.GET))
     log.debug('POST: ' + str(request.POST))
     log.debug('Cookies:\n' + repr(request.COOKIES))
-    #log.debug('Meta:\n' + repr(request.META))
+    log.debug('Meta:\n' + repr(request.META))
     
 def authorize_request(request):
     # fist try cookies
@@ -208,7 +211,8 @@ def authorize_request(request):
         return user
     else:
         # now let's try AccessToken
-        access_token = request.META.get('access_token', None)
+        access_token = request.META.get('HTTP_ACCESSTOKEN', None)
+        log.debug('header HTTP_ACCESSTOKEN: ' + repr(access_token))
         if access_token:
             user = authenticate_token(access_token)
             return user

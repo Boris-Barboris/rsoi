@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseForbidden, \
-    HttpResponseRedirect, HttpResponseBadRequest
+    HttpResponseRedirect, HttpResponseBadRequest, HttpResponseNotAllowed
 
 import logging
 log = logging.getLogger('client_app')
@@ -49,7 +49,7 @@ def index(request):
             response = HttpResponseRedirect(redirect_uri)
     # first check if we have auth_grant in request
     else:
-        response = HttpResponseBadRequest('400 Malformed request.')
+        response = HttpResponseNotAllowed()
     log.debug('response:\n' + str(response.serialize()))
     return response
     
