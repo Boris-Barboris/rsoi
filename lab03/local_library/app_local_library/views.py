@@ -33,7 +33,7 @@ def books(request):
     else:
         return HttpResponseNotAllowed('405 Not allowed.')
         
-@authorize_request_admin
+@authorize_request
 def _books(request, me):
     isbn = request.GET.get('isbn', None)
     if isbn:
@@ -53,7 +53,7 @@ def _books(request, me):
 # GET /books/<id> - информация по книге
 
 @log_view
-@authorize_request_admin
+@authorize_request
 def books_id(request, me, id):
     if request.method == 'PUT':
         b = json.loads(request.body.decode('utf-8'))
@@ -89,7 +89,7 @@ def book_borrow(request, id, borrow_id):
     else:
         return HttpResponseNotAllowed('405 Not allowed.')
 
-@authorize_request_admin        
+@authorize_request        
 def _book_borrow(request, me, id, borrow_id):
     try:
         borrow_book(id, borrow_id)
@@ -109,7 +109,7 @@ def book_return(request, id):
     else:
         return HttpResponseNotAllowed('405 Not allowed.')
 
-@authorize_request_admin        
+@authorize_request        
 def _book_return(request, me, id):
     try:
         return_book(id)

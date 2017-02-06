@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block content %}
+    {% if show_borrows %}
+        {% if borrows|length == 0 %}
+            <div>Empty List</div>
+        {% else %}
+            <table border="1">
+            {% for borrow in borrows %}
+                <tr>
+                <td>{{ borrow }}</td>
+                <td>
+                    {% if borrow.state == 'open' %}
+                        <form action="/borrows/{{ borrow.id }}/return/" method="post">
+                            <button type="submit">Return</button>
+                        </form>
+                    {% endif %}
+                </td>    
+                </tr>
+            {% endfor %}
+            </table><br>
+            <div class="pagination">
+                <span class="step-links">
+                    {% if borrows.has_previous %}
+                        <a href="?page={{ borrows.previous_page_number }}&size={{ size }}">previous</a>
+                    {% endif %}
+
+                    <span class="current">
+                        Page {{ borrows.number }} of {{ borrows.paginator.num_pages }}.
+                    </span>
+
+                    {% if borrows.has_next %}
+                        <a href="?page={{ borrows.next_page_number }}&size={{ size }}">next</a>
+                    {% endif %}
+                </span>
+            </div>
+        {% endif %}
+    {% else %}
+        <h3>Authorize to view your borrows</h3>
+    {% endif %}
+{% endblock content %}

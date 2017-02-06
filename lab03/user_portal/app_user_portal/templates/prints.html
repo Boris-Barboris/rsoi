@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block content %}
+    {% if show_prints %}
+        {% if prints|length == 0 %}
+            <div>Empty List</div>
+        {% else %}
+            <table border="1">
+            {% for print in prints %}
+                <tr>
+                <td>{{ print }}</td>
+                <td>
+                    <form action="/prints/{{ print.isbn }}/borrow/" method="post">
+                        <button type="submit">Borrow</button>
+                    </form>
+                </td>    
+                </tr>
+            {% endfor %}
+            </table><br>
+            <div class="pagination">
+                <span class="step-links">
+                    {% if prints.has_previous %}
+                        <a href="?page={{ prints.previous_page_number }}&size={{ size }}">previous</a>
+                    {% endif %}
+
+                    <span class="current">
+                        Page {{ prints.number }} of {{ prints.paginator.num_pages }}.
+                    </span>
+
+                    {% if prints.has_next %}
+                        <a href="?page={{ prints.next_page_number }}&size={{ size }}">next</a>
+                    {% endif %}
+                </span>
+            </div>
+        {% endif %}
+    {% else %}
+        <h3>Authorize to view availiable prints</h3>
+    {% endif %}
+{% endblock content %}

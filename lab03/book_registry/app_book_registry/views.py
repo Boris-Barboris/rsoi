@@ -33,7 +33,7 @@ def prints(request):
 # DELETE /prints/<isbn> - удаление книги
 
 @log_view
-@authorize_request_admin
+@authorize_request
 def prints_isbn(request, me, isbn):
     if request.method == 'PUT':
         b = json.loads(request.body.decode('utf-8'))

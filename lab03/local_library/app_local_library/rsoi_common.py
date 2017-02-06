@@ -83,7 +83,7 @@ def authorize_request_admin(f):
 def authorize_request(f):
     uname_re = re.compile('.+')
     def _do_authorize(r, *args, **kwargs):
-        return _check_authorization(r, uname_re, *args, **kwargs)        
+        return _check_authorization(f, r, uname_re, *args, **kwargs)        
     return _do_authorize
     
     
@@ -118,7 +118,7 @@ class HttpOauthClient():
             raise UnauthorizedException('server returned 401 Unauthorized')
         elif refresh and r.status_code == 440:
             self.auth_client.issue_tokens()
-            return _authed_request_refresh(self, False, method, *args, **kwargs)
+            return self._authed_request_refresh(False, method, *args, **kwargs)
         else:
             return r
             

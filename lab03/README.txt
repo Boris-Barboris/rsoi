@@ -11,7 +11,7 @@
         
 Open:
     GET /books/status?isbn=<isbn> - проверить наличие книги
-AuthAdmin:
+Auth:
     PUT /books/<id>?isbn=<isbn> - новая книга
     DELETE /books/<id> - удалить книгу
     GET /books/<id> - информация по книге
@@ -30,7 +30,7 @@ AuthAdmin:
         
 Open:
     GET /prints?isbn=<isbn>&title=<title>&author=<author>&page=X&size=Y - фильтрованный список книг
-AuthAdmin:
+Auth:
     PUT /prints/<isbn> - зарегистрировать книгу. В теле полное её представление (json), включающее в себе авторов.
     PATCH /prints/<isbn> - обновление параметров книги (можно обновить всё, кроме ISBN)
     
@@ -53,5 +53,4 @@ Auth:
     POST /prints/<isbn>/borrow - оформить заказ
     POST /borrows/<borrow_id>/return - вернуть книгу
     GET /borrows?page=X&size=Y - список взятых юзером книг
-    GET /me - кто я
     

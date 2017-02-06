@@ -31,6 +31,7 @@ AUTH_SERVER = 'localhost:39000'
 CLIENT_ID = 'book_registry'
 
 LOCAL_LIB = 'localhost:39002'
+BOOK_REGISTRY = 'localhost:39003'
 
 
 # Application definition

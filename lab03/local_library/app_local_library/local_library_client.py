@@ -9,6 +9,14 @@ class LocalLibError(Exception):
     def __init__(self, msg):
         Exception.__init__(self, msg)
         
+class AlreadyBorrowed(Exception):
+    def __init__(self, msg):
+        Exception.__init__(self, msg)
+        
+class AlreadyFree(Exception):
+    def __init__(self, msg):
+        Exception.__init__(self, msg)
+        
         
 class LocalLibClient(HttpOauthClient):
         
@@ -63,6 +71,8 @@ class LocalLibClient(HttpOauthClient):
         r = self._authed_request(self.s.post, uri)
         if r.status_code == 200:
             return r.json()
+        elif r.status_code == 450:
+            raise AlreadyBorrowed(repr(r) + str(r.content))
         else:
             raise LocalLibError(repr(r) + str(r.content))
             
@@ -71,5 +81,7 @@ class LocalLibClient(HttpOauthClient):
         r = self._authed_request(self.s.post, uri)
         if r.status_code == 200:
             return r.json()
+        elif r.status_code == 451:
+            raise AlreadyFree(repr(r) + str(r.content))
         else:
             raise LocalLibError(repr(r) + str(r.content))

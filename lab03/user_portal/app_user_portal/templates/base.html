@@ -1,0 +1,13 @@
+<h2>Library user portal</h2>
+<div id="tab">
+<a href="/prints/stored/">Books</a>
+<a href="/borrows/">Borrows</a>
+{% if not auth or not auth.tokens %}
+    <a href="/login/">Login</a>
+{% else %}
+    <a href="/logout/">Logout ({{ auth.me.uname }})</a>
+{% endif %}
+</div>
+<div id="content">
+{% block content %}{% endblock %}
+</div>

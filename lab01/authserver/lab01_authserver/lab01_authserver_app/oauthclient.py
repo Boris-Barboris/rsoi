@@ -120,6 +120,8 @@ class TokenPlugin():
             raise AuthResponseException('Response = ' + repr(r.status_code))
             
     def issue_tokens(self, auth_url, s, client_id, client_secret, redirect_uri):
+        if not self.rtoken:
+            raise UnauthorizedException('Plugin has no refresh token')
         data = {'grant_type':       'refresh_token',
                 'client_id':        client_id,
                 'client_secret':    client_secret,
@@ -132,7 +134,7 @@ class TokenPlugin():
             self.rtoken = tokens['refresh_token']
             return tokens
         elif r.status_code == 440:
-            raise ExpiredException('Grant code ' + self.code + ' expired')
+            raise ExpiredException('Refresh token ' + self.rtoken + ' expired')
         else:
             raise AuthResponseException('Response = ' + repr(r.status_code))
     
