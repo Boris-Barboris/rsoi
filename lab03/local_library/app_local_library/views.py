@@ -15,7 +15,7 @@ from .models import *
 @log_view
 def books_status(request):
     if request.method == 'GET':
-        isbn = request.GET.get(['isbn'], None)
+        isbn = request.GET.get('isbn', None)
         if isbn:
             return HttpResponse(str(get_status(isbn)))
         else:
@@ -42,8 +42,10 @@ def _books(request, me):
         books = get_books()
     pbooks = paginate_list(books, request)
     pbooks_dicts = [b.to_dict() for b in pbooks]
-    return HttpResponse(content = json.dumps(pbooks_dicts), 
+    resp = HttpResponse(content = json.dumps(pbooks_dicts), 
                 content_type='application/json', status=200)
+    resp['X-total-count'] = str(len(books))
+    return resp
     
     
 # PUT /books/<id>?isbn=<isbn> - новая книга
@@ -58,10 +60,15 @@ def books_id(request, me, id):
         if not 'isbn' in b:
             return HttpResponseBadRequest('400 Malformed request.')
         else:
-            create_book(id, b['isbn'])
-            res = get_book(id)
-            return HttpResponse(content = json.dumps(res.to_dict()), 
-                content_type='application/json', status=200)
+            try:
+                create_book(id, b['isbn'], me)
+                res = get_book(id)
+                return HttpResponse(content = json.dumps(res.to_dict()), 
+                    content_type='application/json', status=201)
+            except BookAlreadyExists:
+                return HttpResponse('441 Already exists.', status=441)
+            except PrintDoesNotExist:
+                return HttpResponse('442 Print does not exist.', status=442)
     elif request.method == 'DELETE':
         delete_book(id)
         return HttpResponse()

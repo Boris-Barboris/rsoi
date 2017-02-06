@@ -25,22 +25,13 @@ AuthAdmin:
         - ISBN (PK)
         - Title
         - page_count
-        
-    BookAuthors(1:N relation):
-        - id (PK)
-        - ISBN(FK)
-        - author_id(FK)
-        
-    Author:
-        - id (PK)
-        - Name
-        - Date of Birth
+        - authors
+        - year
         
 Open:
-    GET /prints?isbn=<isbn>&title=<title>&author=<author> - фильтрованный список книг
-    GET /authors - список известных авторов
+    GET /prints?isbn=<isbn>&title=<title>&author=<author>&page=X&size=Y - фильтрованный список книг
 AuthAdmin:
-    PUT /prints/<isbn> - зарегистрировать книгу, комплексная операция. В теле полное её представление (json), включающее в себе авторов. Если авторы не найдены, то тут же и регистрируются.
+    PUT /prints/<isbn> - зарегистрировать книгу. В теле полное её представление (json), включающее в себе авторов.
     PATCH /prints/<isbn> - обновление параметров книги (можно обновить всё, кроме ISBN)
     
 (library_service):

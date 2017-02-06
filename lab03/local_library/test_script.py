@@ -27,19 +27,28 @@ print('\n' + repr(tokens) + '\n')
 
 ll = LocalLibClient('http://localhost:39002', client)
 
+print('\nlist free...\n')
+print('\n\n' + repr(ll.books_status('10000')) + '\n')
+
 print('\nlist books...\n')
 print('\n\n' + repr(ll.books_list()) + '\n')
 
 print('\ncreating test books...\n')
-print('\n\n' + repr(ll.add_book(1337, '181899')) + '\n')
-print('\n\n' + repr(ll.add_book(1338, '181899')) + '\n')
-print('\n\n' + repr(ll.add_book(1339, '181899')) + '\n')
+print('\n\n' + repr(ll.add_book(1337, '10000')) + '\n')
+print('\n\n' + repr(ll.add_book(1338, '10000')) + '\n')
+print('\n\n' + repr(ll.add_book(1339, '10000')) + '\n')
 
 print('\nlist books paginated...\n')
-print('\n\n' + repr(ll.books_list(isbn='181899', page=0, size=2)) + '\n')
+print('\n\n' + repr(ll.books_list(isbn='10000', page=0, size=2)) + '\n')
+
+print('\nlist free...\n')
+print('\n\n' + repr(ll.books_status('10000')) + '\n')
 
 print('\nborrowing book...\n')
 print('\n\n' + repr(ll.borrow_book(1337, 8832893)) + '\n')
+
+print('\nlist free...\n')
+print('\n\n' + repr(ll.books_status('10000')) + '\n')
 
 print('\nreturning book...\n')
 print('\n\n' + repr(ll.return_book(1337)) + '\n')
@@ -51,3 +60,6 @@ print('\n\n' + repr(ll.delete_book(1339)) + '\n')
 
 print('\nlist books...\n')
 print('\n\n' + repr(ll.books_list()) + '\n')
+
+print('\nadding nonsence isbn...\n')
+print('\n\n' + repr(ll.add_book(1230323832, 'asldjs12')) + '\n')

@@ -1,5 +1,10 @@
 from django.db import models
 import json
+import logging
+
+from .clients import *
+
+log = logging.getLogger('app_logging')
 
 # Create your models here.
 
@@ -27,10 +32,15 @@ class Book(models.Model):
         
 # exceptions
 
-class AlreadyExists(Exception):
+class BookAlreadyExists(Exception):
     def __init__(self, id):
         Exception.__init__(self, 'Book id={} already exists'.format(id))
         self.id = id
+        
+class PrintDoesNotExist(Exception):
+    def __init__(self, isbn):
+        Exception.__init__(self, 'Print isbn={} does not exists'.format(isbn))
+        self.isbn = isbn
 
 class AlreadyBorrowed(Exception):
     def __init__(self, id):
@@ -46,17 +56,24 @@ class AlreadyFree(Exception):
 
 def get_status(isbn):
     free_books = Book.objects.filter(isbn=isbn).filter(state=Book.FREE)    
+    log.debug('free_books = ' + str(free_books))
+    log.debug('free_books len = ' + str(len(free_books)))
     if len(free_books) > 0:
         return True
     else:
         return False
         
-def create_book(id, isbn):
-    # isbn validation should be here
+def create_book(id, isbn, me):
     try:
         book = Book.objects.get(id=id)
-        raise AlreadyExists(id)
+        raise BookAlreadyExists(id)
     except Book.DoesNotExist:
+        # validate isbn
+        token = me['token']
+        br = book_registry_client(token)
+        p = br.list_prints(isbn=isbn)
+        if p['total'] == 0:
+            raise PrintDoesNotExist(isbn)
         book = Book(id=id, isbn=isbn)
         book.save()
         return book

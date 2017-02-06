@@ -30,6 +30,9 @@ ALLOWED_HOSTS = ['*']
 AUTH_SERVER = 'localhost:39000'
 CLIENT_ID = 'local_library'
 
+LOCAL_LIB = 'localhost:39002'
+BOOK_REGISTRY = 'localhost:39003'
+
 
 # Application definition
 

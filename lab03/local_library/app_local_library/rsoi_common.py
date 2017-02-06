@@ -37,7 +37,8 @@ def log_view(f):
     def wrap_view(request, *args, **kwargs):
         log_request(request)
         res = f(request, *args, **kwargs)
-        log.debug('===Response=== ' + repr(res) + '\n' + repr(res.serialize()))
+        log.debug('===Response=== ' + repr(res) + '\n' + \
+            repr(res.serialize()) + ' content: ' + res.content.decode('utf-8'))
         return res
         
     return wrap_view
@@ -95,3 +96,37 @@ def paginate_list(l, request):
         return l[page * size : (page + 1) * size]
     else:
         return l
+
+        
+# common http base class
+class HttpOauthClient():
+    def __init__(self, url, auth_client):
+        self.url = url
+        self.auth_client = auth_client
+        self.s = requests.Session()
+        
+    def _authed_request_refresh(self, refresh, method, *args, **kwargs):
+        atoken = self.auth_client.get_token()
+        headers = {'ACCESSTOKEN': atoken}
+        k_headers = kwargs.get('headers', {})
+        k_headers.update(headers)
+        kwargs['headers'] = k_headers
+        r = method(*args, **kwargs)
+        if r.status_code == 403:
+            raise ForbiddenException('server returned 403 Forbidden')
+        elif r.status_code == 401:
+            raise UnauthorizedException('server returned 401 Unauthorized')
+        elif refresh and r.status_code == 440:
+            self.auth_client.issue_tokens()
+            return _authed_request_refresh(self, False, method, *args, **kwargs)
+        else:
+            return r
+            
+    def _authed_request(self, method, *args, **kwargs):
+        return self._authed_request_refresh(True, method, *args, **kwargs)
+        
+# common exception
+class AlreadyExists(Exception):
+    def __init__(self, msg):
+        Exception.__init__(self, msg)
+        
