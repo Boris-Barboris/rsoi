@@ -46,6 +46,7 @@ def grant_login(f):
 # GET /
 
 @log_view
+@http_exception_guard
 @grant_login
 def root(request, auth):
     if request.method == 'GET':
@@ -57,6 +58,7 @@ def root(request, auth):
 # GET /login?code=<code>
 
 @log_view
+@http_exception_guard
 @grant_login
 def login(request, auth):
     if request.method == 'GET':
@@ -74,6 +76,7 @@ def login(request, auth):
 # GET /logout
        
 @log_view
+@http_exception_guard
 def logout(request):
     if request.method == 'GET':
         request.session.pop('auth', None)
@@ -84,6 +87,7 @@ def logout(request):
 # GET /prints/stored?isbn=<isbn>&title=<title>&author=<author>&page=X&size=Y
         
 @log_view
+@http_exception_guard
 @grant_login
 def prints_stored(request, auth):
     if request.method == 'GET':
@@ -114,6 +118,7 @@ def prints_stored(request, auth):
         
 
 @log_view
+@http_exception_guard
 @grant_login
 def borrows(request, auth):
     if request.method == 'GET':
@@ -148,6 +153,7 @@ def borrows(request, auth):
         
 
 @log_view
+@http_exception_guard
 @grant_login
 def borrow(request, auth, isbn):
     if request.method == 'POST':
@@ -171,6 +177,7 @@ def borrow(request, auth, isbn):
         
 
 @log_view
+@http_exception_guard
 @grant_login
 def do_return(request, auth, borrow_id):
     if request.method == 'POST':

@@ -7,6 +7,8 @@ from django.http import HttpResponse
 from django.conf import settings
 from .oauthclient import *
 
+from requests.exceptions import RequestException
+
 log = logging.getLogger('app_logging')
 
 important_headers = (
@@ -60,7 +62,6 @@ def _check_authorization(f, r, rexp, *args, **kwargs):
             match = rexp.match(me['uname'])
             if match:
                 log.debug('uname match OK')
-                return f(r, me, *args, **kwargs)
             else:
                 log.debug('uname match failed')
                 return HttpResponse('403 Forbidden', status=403)
@@ -70,7 +71,9 @@ def _check_authorization(f, r, rexp, *args, **kwargs):
             return HttpResponse('440 Token expired', status=440)
         except Exception as e:
             log.debug('Error while verifying token: ' + traceback.format_exc())
-            return HttpResponse('500 Internal Server Error', status=500)
+            return HttpResponse('503 Service unavailiable', status=503)
+        return f(r, me, *args, **kwargs)
+        
     else:
         return HttpResponse('401 Unauthorized', status=401)    
     
@@ -86,6 +89,15 @@ def authorize_request(f):
         return _check_authorization(f, r, uname_re, *args, **kwargs)        
     return _do_authorize
     
+def http_exception_guard(f):
+    def catch_http_exceptions(r, *args, **kwargs):
+        try:
+            res = f(r, *args, **kwargs)
+            return res
+        except RequestException:
+            log.debug('RequestException caught:\n' + traceback.format_exc())
+            return HttpResponse('503 Service unavailiable', status=503)
+    return catch_http_exceptions
     
 def paginate_list(l, request):
     page = request.GET.get('page', '0')

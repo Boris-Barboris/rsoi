@@ -14,6 +14,7 @@ from .models import *
 # фильтрованный список книг
 
 @log_view
+@http_exception_guard
 def prints(request):
     if request.method == 'GET':
         isbn = request.GET.get('isbn', None)
@@ -33,6 +34,7 @@ def prints(request):
 # DELETE /prints/<isbn> - удаление книги
 
 @log_view
+@http_exception_guard
 @authorize_request
 def prints_isbn(request, me, isbn):
     if request.method == 'PUT':

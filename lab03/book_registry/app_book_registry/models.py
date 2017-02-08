@@ -63,11 +63,12 @@ def register_print(isbn, params):
         print = Print.objects.get(isbn=isbn)
         raise PrintAlreadyExists(isbn)
     except Print.DoesNotExist:
-        print = Print(isbn=isbn, title=params['title'], 
-            page_count=params['page_count'], authors=params['authors'], 
-            year=params.get('year', None))
-        print.save()
-        return print
+        pass
+    print = Print(isbn=isbn, title=params['title'], 
+        page_count=params['page_count'], authors=params['authors'], 
+        year=params.get('year', None))
+    print.save()
+    return print
         
 def update_print(isbn, params):
     print = Print.objects.get(isbn=isbn)

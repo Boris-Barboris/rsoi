@@ -13,6 +13,7 @@ from .models import *
 # GET /books/status?isbn=<isbn> - проверить наличие книги
 
 @log_view
+@http_exception_guard
 def books_status(request):
     if request.method == 'GET':
         isbn = request.GET.get('isbn', None)
@@ -27,6 +28,7 @@ def books_status(request):
 # GET /books?isbn=<isbn>&page=X&size=Y - список книг с фильтрацией и пагинацией
         
 @log_view
+@http_exception_guard
 def books(request):
     if request.method == 'GET':
         return _books(request)
@@ -53,6 +55,7 @@ def _books(request, me):
 # GET /books/<id> - информация по книге
 
 @log_view
+@http_exception_guard
 @authorize_request
 def books_id(request, me, id):
     if request.method == 'PUT':
@@ -83,6 +86,7 @@ def books_id(request, me, id):
 #POST /books/<id>/borrow/<borrow_id> - выдать книгу
             
 @log_view
+@http_exception_guard
 def book_borrow(request, id, borrow_id):
     if request.method == 'POST':
         return _book_borrow(request, id, borrow_id)
@@ -103,6 +107,7 @@ def _book_borrow(request, me, id, borrow_id):
 # POST /books/<id>/return - вернуть книгу
         
 @log_view
+@http_exception_guard
 def book_return(request, id):
     if request.method == 'POST':
         return _book_return(request, id)

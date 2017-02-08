@@ -68,15 +68,16 @@ def create_book(id, isbn, me):
         book = Book.objects.get(id=id)
         raise BookAlreadyExists(id)
     except Book.DoesNotExist:
-        # validate isbn
-        token = me['token']
-        br = book_registry_client(token)
-        p = br.list_prints(isbn=isbn)
-        if p['total'] == 0:
-            raise PrintDoesNotExist(isbn)
-        book = Book(id=id, isbn=isbn)
-        book.save()
-        return book
+        pass
+    # validate isbn
+    token = me['token']
+    br = book_registry_client(token)
+    p = br.list_prints(isbn=isbn)
+    if p['total'] == 0:
+        raise PrintDoesNotExist(isbn)
+    book = Book(id=id, isbn=isbn)
+    book.save()
+    return book
     
 def delete_book(id):
     book = Book.objects.get(id=id)
